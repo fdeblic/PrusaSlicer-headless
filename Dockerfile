@@ -32,15 +32,13 @@ ARG PRUSA_SLICER_VERSION=2.9.4
 RUN git clone --depth 1 --branch version_${PRUSA_SLICER_VERSION} https://github.com/prusa3d/PrusaSlicer
 
 WORKDIR /PrusaSlicer/deps/build
-RUN --mount=type=cache,target=/PrusaSlicer/deps/build,sharing=locked \
-    cmake .. -DPrusaSlicer_deps_PACKAGE_EXCLUDES="wxWidgets" -DDEP_DEBUG=OFF
+RUN cmake .. -DPrusaSlicer_deps_PACKAGE_EXCLUDES="wxWidgets" -DDEP_DEBUG=OFF
 RUN --mount=type=cache,target=/PrusaSlicer/deps/build,sharing=locked \
     --mount=type=cache,target=/root/.cache \
     make -j$(nproc)
 
 WORKDIR /PrusaSlicer/build
-RUN --mount=type=cache,target=/PrusaSlicer/build,sharing=locked \
-    cmake .. \
+RUN cmake .. \
     -DSLIC3R_STATIC=ON \
     -DSLIC3R_GUI=OFF \
     -DSLIC3R_BUILD_TESTS=OFF \
