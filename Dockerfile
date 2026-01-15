@@ -1,5 +1,3 @@
-# syntax=docker/dockerfile:1
-
 FROM debian:bookworm-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -33,9 +31,7 @@ RUN git clone --depth 1 --branch version_${PRUSA_SLICER_VERSION} https://github.
 
 WORKDIR /PrusaSlicer/deps/build
 RUN cmake .. -DPrusaSlicer_deps_PACKAGE_EXCLUDES="wxWidgets" -DDEP_DEBUG=OFF
-RUN --mount=type=cache,target=/PrusaSlicer/deps/build,sharing=locked \
-    --mount=type=cache,target=/root/.cache \
-    make -j$(nproc)
+RUN make
 
 WORKDIR /PrusaSlicer/build
 RUN cmake .. \
@@ -43,9 +39,7 @@ RUN cmake .. \
     -DSLIC3R_GUI=OFF \
     -DSLIC3R_BUILD_TESTS=OFF \
     -DCMAKE_PREFIX_PATH=$(pwd)/../deps/build/destdir/usr/local
-RUN --mount=type=cache,target=/PrusaSlicer/build,sharing=locked \
-    --mount=type=cache,target=/root/.cache \
-    make -j$(nproc)
+RUN make
 
 
 
