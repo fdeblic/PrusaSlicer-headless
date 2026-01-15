@@ -26,14 +26,13 @@ ENV LC_ALL=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
     LANGUAGE=en_US.UTF-8
 
-ARG PRUSA_SLICER_VERSION=2.9.4
-RUN git clone --depth 1 --branch version_${PRUSA_SLICER_VERSION} https://github.com/prusa3d/PrusaSlicer
+COPY . .
 
-WORKDIR /PrusaSlicer/deps/build
+WORKDIR /deps/build
 RUN cmake .. -DPrusaSlicer_deps_PACKAGE_EXCLUDES="wxWidgets" -DDEP_DEBUG=OFF
 RUN make
 
-WORKDIR /PrusaSlicer/build
+WORKDIR /build
 RUN cmake .. \
     -DSLIC3R_STATIC=ON \
     -DSLIC3R_GUI=OFF \
@@ -49,8 +48,8 @@ RUN apt-get update && apt-get install -y \
     libpng16-16 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /PrusaSlicer/build/src/prusa-slicer /usr/local/bin
-COPY --from=builder /PrusaSlicer/resources /usr/local/share/PrusaSlicer/resources
+COPY --from=builder /build/src/prusa-slicer /usr/local/bin
+COPY --from=builder /resources /usr/local/share/PrusaSlicer/resources
 
 WORKDIR /workspace
 

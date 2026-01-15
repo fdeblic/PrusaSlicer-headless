@@ -34,7 +34,5 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
-          build-args: |
-            PRUSA_SLICER_VERSION=${{ github.ref_name }}
           tags: |
             fdeblic/prusaslicer-headless:${{ github.ref_name }}
